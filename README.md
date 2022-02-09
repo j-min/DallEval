@@ -1,16 +1,15 @@
 # DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers
 
 
-
 * Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://aszala.com/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/)
 * [Paper](https://arxiv.org/abs/2202.04053)
 
-<img src="./assets/teaser.png" alt="teaser image" width="600"/>
+<img src="./assets/teaser.png" alt="teaser image" width="700"/>
 
 
-## PaintSkills - Visual Reasoning
+# PaintSkills - Visual Reasoning
 
-### Dataset
+## Dataset
 
 * Download four skill data: `object.zip`, `count.zip`, `color.zip` and `spatial.zip` from [the Google Drive link](https://drive.google.com/drive/folders/1Bza2zyvHLvComohZ9PAGyykY7sm7JoIH) and unzip.
 ```bash
@@ -38,22 +37,20 @@ unzip spatial.zip
 ```
 
 
-### Evaluation
+## Evaluation
 
 Please see [./paintskills/detr/README.md](./paintskills/detr/README.md) for our DETR-based visual reasoning skill evaluation.
 
 
-* Evaluation scripts for other aspects will be updated.
-
-#  Acknowledgements
+# Acknowledgements
 - We thank the developers of [DETR](https://github.com/facebookresearch/detr) for public releases of their code.
 
 # Reference
 Please cite our paper if you use our models in your works:
 ```bibtex
 
-@article{cho2022dalleval,
-  title         = {DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformer},
+@article{Cho2022DallEval,
+  title         = {DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers},
   author        = {Jaemin Cho and Abhay Zala and Mohit Bansal},
   year          = {2022},
   archivePrefix = {arXiv},
