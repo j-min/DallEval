@@ -1,7 +1,7 @@
 # DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers
 
 
-* Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://aszala.com/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/)
+* Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://aszala.com/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/) (UNC Chapel Hill)
 * [Paper](https://arxiv.org/abs/2202.04053)
 
 <img src="./assets/teaser.png" alt="teaser image" width="700"/>
@@ -43,10 +43,10 @@ Please see [./paintskills/detr/README.md](./paintskills/detr/README.md) for our 
 
 
 # Acknowledgements
-- We thank the developers of [DETR](https://github.com/facebookresearch/detr) for public releases of their code.
+- We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release.
 
 # Reference
-Please cite our paper if you use our models in your works:
+Please cite our paper if you use our dataset in your works:
 ```bibtex
 
 @article{Cho2022DallEval,
