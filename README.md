@@ -24,8 +24,8 @@ TBD.
 TBD. -->
 
 
-# Acknowledgments
-- We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release.
+<!-- # Acknowledgments
+- We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release. -->
 
 # Reference
 Please cite our paper if you use our dataset in your works:

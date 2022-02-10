@@ -43,8 +43,8 @@ For DETR-specific details, please see [./detr/README.md](./detr/README.md) writt
 ### Download DETR-R50 checkpoint trained on COCO for weight initializaiton
 
 ```bash
-mkdir checkpoints
-cd checkpoints/
+mkdir ./detr/checkpoints
+cd ./detr/checkpoints/
 wget https://dl.fbaipublicfiles.com/detr/detr-r50-e632da11.pth
 ```
 
