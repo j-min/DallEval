@@ -5,10 +5,10 @@ python -m torch.distributed.launch \
     --nproc_per_node=$n_gpus \
     --use_env \
     --master_port=23456 \
-    main.py \
-    --resume './checkpoints/detr-r50-e632da11.pth' \
+    detr/main.py \
+    --resume './detr/checkpoints/detr-r50-e632da11.pth' \
     --dataset_file 'skill' \
-    --output_dir './output/' \
+    --output_dir './detr/output/' \
     --batch_size 16 \
     --epochs 10 \
     --lr 1e-5 \

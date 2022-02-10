@@ -110,6 +110,7 @@ def get_args_parser():
 
     parser.add_argument('--dataset_file', default='skill')
     parser.add_argument('--skill_name', type=str, default='object')
+    parser.add_argument('--paintskills_dir', type=str, default=None)
 
     return parser
 

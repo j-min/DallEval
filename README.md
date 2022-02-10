@@ -6,43 +6,25 @@
 
 <img src="./assets/teaser.png" alt="teaser image" width="700"/>
 
+# Visual Reasoning
 
-# PaintSkills - Visual Reasoning
-
-## Dataset
-
-* Download four skill data: `object.zip`, `count.zip`, `color.zip` and `spatial.zip` from [the Google Drive link](https://drive.google.com/drive/folders/1Bza2zyvHLvComohZ9PAGyykY7sm7JoIH) and unzip.
-```bash
-unzip object.zip
-unzip count.zip
-unzip color.zip
-unzip spatial.zip
-```
+Please see [./paintskills](./paintskills/) for our DETR-based visual reasoning skill evaluation.
 
 
-* Each skill directory has hierarchy as below:
-```bash
-{skill}/        # skill name (i.e.., object, count, color, and spatial)
-    # Images
-    images/
+<!-- # Image-Text Alignment
 
-    # Scene configuration
-    scenes/
-        {skill}_train.json
-        {skill}_val.json
+TBD.
 
-    # Bounding box annotations - only needed for DETR
-    {skill}_train_bounding_boxes.json
-    {skill}_val_bounding_boxes.json
-```
+# Image Quality
+
+TBD.
+
+# Social Bias
+
+TBD. -->
 
 
-## Evaluation
-
-Please see [./paintskills/detr/README.md](./paintskills/detr/README.md) for our DETR-based visual reasoning skill evaluation.
-
-
-# Acknowledgements
+# Acknowledgments
 - We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release.
 
 # Reference

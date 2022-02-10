@@ -22,12 +22,9 @@ class PaintSkillDataset(CocoDetection):
         self.args = args
 
         self.metadata = json.load(open(metadata_file))
-        if args.paintskill_real:
-            self.class_name_to_id = self.metadata['Shape']
-            self.color_name_to_id = {name: id for id, name in enumerate(self.metadata['Color'])}
-        else:
-            self.class_name_to_id = {name: id for id, name in enumerate(self.metadata['Shape'])}
-            self.color_name_to_id = {name: id for id, name in enumerate(self.metadata['Color'])}
+
+        self.class_name_to_id = {name: id for id, name in enumerate(self.metadata['Shape'])}
+        self.color_name_to_id = {name: id for id, name in enumerate(self.metadata['Color'])}
 
         print('color name2id')
         print(self.color_name_to_id)
@@ -134,38 +131,19 @@ class ConvertCocoPolysToMask(object):
 
 def build_dataset(image_set,  args):
 
-    # root = Path(args.coco_path)
+    # proj_dir = Path(__file__).parent.parent.parent.parent
 
-    proj_dir = Path(__file__).parent.parent.parent.parent
-    if args.paintskill_real:
-        root = proj_dir.joinpath('datasets/PaintSkills-real/')
-    else:
-        root = proj_dir.joinpath('datasets/PaintSkills/')
+    # root = proj_dir.joinpath('datasets/PaintSkills/')
 
-    assert root.exists(), f'provided COCO path {root} does not exist'
-    # mode = 'instances'
-    # PATHS = {
-    #     # "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
-    #     # "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
-    #     "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
-    #     "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
-    # }
+    root = Path(args.paintskills_dir)
 
-    # img_folder, ann_file = PATHS[image_set]
-
+    assert root.exists(), f'provided path {root} does not exist'
 
     skill_dir = root.joinpath(args.skill_name)
-    if args.paintskill_real:
-        img_folder = skill_dir.joinpath("images").joinpath(image_set)
-    else:
-        img_folder = skill_dir.joinpath("images")
-    # ann_file = skill_dir.joinpath(f"{args.skill_name.capitalize()}_{image_set}_bounding_boxes.json")
+
+    img_folder = skill_dir.joinpath("images")
     ann_file = skill_dir.joinpath(f"{args.skill_name}_{image_set}_bounding_boxes.json")
     metadata_file = root.joinpath("metadata.json")
-
-
-    # from datasets.coco import CocoDetection, make_coco_transforms
-    # dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=args.masks)
 
     dataset = PaintSkillDataset(img_folder, ann_file, metadata_file=metadata_file,
                                 transforms=make_coco_transforms(image_set), return_masks=args.masks,
@@ -176,31 +154,16 @@ def build_dataset(image_set,  args):
 
 if __name__ == '__main__':
     import argparse
-    simulator_dir = Path(__file__).resolve().parents[2].joinpath('unity_simulator')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--skill_name', type=str, default='object')
-    # parser.add_argument('--root', type=str, default=simulator_dir.joinpath('/home/jupyter/datasets/paint_skill/')
-    # parser.add_argument('--ann_file', type=str, default='/home/jup)
-    # parser.add_argument()
     args = parser.parse_args()
 
-    # args.root = simulator_dir.joinpath(f'output/{args.skill_name}')
-    # args.ann_file = simulator_dir.joinpath(f'output/{args.skill_name}/bounding_boxes.json')
-    # args.metadata_file = simulator_dir.joinpath(f'data/metadata.json')
 
-    # dataset = PaintSkillDataset(
-    #     root='/Users/jaeminc/Dropbox/Projects/UNC/dalle_analysis/unity_simulator/output/object',
-    #     ann_file='/Users/jaeminc/Dropbox/Projects/UNC/dalle_analysis/unity_simulator/output/object/bounding_boxes.json',
-    #     metadata_file='/Users/jaeminc/Dropbox/Projects/UNC/dalle_analysis/unity_simulator/data/metadata.json'
-    # )
     dataset = build_dataset('train', args)
     print(dataset)
 
     from tqdm import tqdm
-    # for i, datum in enumerate(dataset):
-    #     print(datum)
-    #     pass
 
     import util.misc as utils
 
