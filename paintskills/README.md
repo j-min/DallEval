@@ -1,6 +1,10 @@
 # Visual Reasoning Skill Evaluation on PaintSkills
 
+<img src="../assets/skills.png" alt="teaser image" width="1200"/>
+
 ## Dataset
+
+<img src="../assets/dataset_generation.png" alt="teaser image" width="500"/>
 
 * Create `$paintskills_dir` directory.
 * From [the Google Drive link](https://drive.google.com/drive/folders/1Bza2zyvHLvComohZ9PAGyykY7sm7JoIH), download `metadata.json` and four skill data: `object.zip`, `count.zip`, `color.zip`, `spatial.zip`.

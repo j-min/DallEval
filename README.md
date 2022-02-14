@@ -4,24 +4,25 @@
 * Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://aszala.com/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/) (UNC Chapel Hill)
 * [Paper](https://arxiv.org/abs/2202.04053)
 
-<img src="./assets/teaser.png" alt="teaser image" width="700"/>
+<img src="./assets/teaser.png" alt="teaser image" width="500"/>
 
 # Visual Reasoning
 
+<img src="./assets/skills.png" alt="skill image" width="1200"/>
+
 Please see [./paintskills](./paintskills/) for our DETR-based visual reasoning skill evaluation.
 
+# Image Quality & Image-Text Alignment
 
-<!-- # Image-Text Alignment
-
-TBD.
-
-# Image Quality
+<img src="./assets/alignment_quality.png" alt="alignment and quality image" width="500"/>
 
 TBD.
 
 # Social Bias
 
-TBD. -->
+<img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
+
+TBD.
 
 # Models
 
