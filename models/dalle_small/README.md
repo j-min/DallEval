@@ -50,6 +50,6 @@ bash scripts/inference_skill_CCPT_FT.sh $skill $paintskills_dir $image_dump_dir
 
 e.g.,
 paintskills_dir='../../../../../datasets/PaintSkills'
-image_dump_dir='../../../../../datasets/PaintSkills/DalleSmall_FT_object'
+image_dump_dir='../../../../../datasets/PaintSkills/DalleSmall_inference/object_CC_val'
 bash scripts/finetune_skill_CCPT.sh 'object' $paintskills_dir $image_dump_dir
 ```

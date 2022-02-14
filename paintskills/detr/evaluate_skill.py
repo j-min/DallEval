@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 dump_name = f'{skill_name}_CC_{split}'
             else:
                 dump_name = f'{skill_name}_CCzero_{split}'
-            image_dir = paintskills_dir.joinpath(f'DALLE_inference/{dump_name}')
+            image_dir = paintskills_dir.joinpath(f'DalleSmall_inference/{dump_name}')
 
         elif 'rudalle' in args.gen_model:
             if args.FT:

@@ -78,4 +78,17 @@ bash scripts/evaluate_skill.sh \
 
 ## Evaluation of Text2Img models with DETR
 
-TBD.
+```bash
+bash scripts/evaluate_skill.sh \
+    --skill_name $skill \
+    --gen_model $model \ # which model images to be evaluated
+    --FT \ # whether to use the finetuned model images
+    --paintskills_dir $paintskills_dir
+
+e.g.,
+bash scripts/evaluate_skill.sh \
+    --skill_name 'object' \
+    --gen_model 'dalle_small' \
+    --FT \
+    --paintskills_dir $paintskills_dir
+```
