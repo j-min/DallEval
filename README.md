@@ -23,6 +23,10 @@ TBD.
 
 TBD. -->
 
+# Models
+
+We provide training and inference scripts for [DALLE-small](./models/dalle_small/), [X-LXMERT](./models/xlxmert/), [MinDALL-E](models/mindalle), and [RuDALL-E XL](./models/rudalle/).
+
 
 <!-- # Acknowledgments
 - We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release. -->
