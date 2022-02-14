@@ -35,9 +35,8 @@ cp "vqgan.1024.config.yml" ~/.cache/dalle
 ## Training on PaintSkills
 ```bash
 bash scripts/finetune_skill_CCPT.sh $skill $paintskills_dir
-```
 
-```bash
+e.g.,
 paintskills_dir='../../../../../datasets/PaintSkills'
 bash scripts/finetune_skill_CCPT.sh 'object' $paintskills_dir
 bash scripts/finetune_skill_CCPT.sh 'count' $paintskills_dir
@@ -47,7 +46,7 @@ bash scripts/finetune_skill_CCPT.sh 'spatial' $paintskills_dir
 
 ## Inference on PaintSkills
 ```bash
-bash scripts/infeerence_skill_CCPT_FT.sh $skill $paintskills_dir $image_dump_dir
+bash scripts/inference_skill_CCPT_FT.sh $skill $paintskills_dir $image_dump_dir
 
 e.g.,
 paintskills_dir='../../../../../datasets/PaintSkills'
