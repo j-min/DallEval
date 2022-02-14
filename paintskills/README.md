@@ -40,7 +40,7 @@ $paintskills_dir/
 
 For DETR-specific details, please see [./detr/README.md](./detr/README.md) written by original DETR developers.
 
-### Download DETR-R50 checkpoint trained on COCO for weight initializaiton
+### Download DETR-R50 checkpoint trained on COCO for weight initialization
 
 ```bash
 mkdir ./detr/checkpoints
