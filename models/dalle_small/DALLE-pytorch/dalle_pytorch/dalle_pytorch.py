@@ -455,13 +455,9 @@ class DALLE(nn.Module):
         temperature = 1.,
         img = None,
         num_init_img_tokens = None,
-        return_aux_LR_img=False
     ):
         vae, text_seq_len, image_seq_len, num_text_tokens = self.vae, self.text_seq_len, self.image_seq_len, self.num_text_tokens
         total_len = text_seq_len + image_seq_len
-
-        if self.aux_LR_target:
-            total_len += self.LR_image_seq_len
 
         text = text[:, :text_seq_len] # make sure text is within bounds
         out = text

@@ -3,7 +3,7 @@
 skill_name=$1
 dataset_dir=$2
 # dataset_dir='../../../../../datasets/PaintSkills'
-image_dump_dir$3
+image_dump_dir=$3
 # image_dump_dir='../../../../../datasets/PaintSkills/DalleSmall_inference'
 
 split='val'
