@@ -1,0 +1,9 @@
+git+https://github.com/afiaka87/CLIP.git
+taming-transformers-rom1504
+wandb
+tokenizers
+ftfy
+regex
+triton==0.4.2
+tqdm
+gpustat
