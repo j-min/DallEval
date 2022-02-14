@@ -25,11 +25,11 @@ TBD. -->
 
 # Models
 
-We provide training and inference scripts for [DALLE-small](./models/dalle_small/), [X-LXMERT](./models/xlxmert/), [MinDALL-E](models/mindalle), and [RuDALL-E XL](./models/rudalle/).
+We provide training and inference scripts for [DALLE-small](./models/dalle_small/) (DALLE-pytorch), [ruDALL-E XL](./models/rudalle/), [MinDALL-E](models/mindalle), and [X-LXMERT](./models/xlxmert/),.
 
 
-<!-- # Acknowledgments
-- We thank the developers of [DETR](https://github.com/facebookresearch/detr) for their public code release. -->
+# Acknowledgments
+We thank the developers of [DETR](https://github.com/facebookresearch/detr), [DALLE-pytorch](https://github.com/lucidrains/DALLE-pytorch), [ruDALL-E](https://github.com/sberbank-ai/ru-dalle), [MinDALL-E](https://github.com/kakaobrain/minDALL-E), and [X-LXMERT](https://github.com/allenai/x-lxmert), for their public code release.
 
 # Reference
 Please cite our paper if you use our dataset in your works:
