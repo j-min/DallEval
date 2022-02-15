@@ -1,0 +1,18 @@
+dataset:
+  dataset: skill
+  image_resolution: 256
+
+optimizer:
+  opt_type: adamW
+  base_lr: 1e-4
+  weight_decay: 0.0
+  betas: [0.9, 0.95]
+  grad_clip_norm: 4.0
+
+  loss_img_weight: 7
+
+experiment:
+  local_batch_size: 4
+  total_batch_size: 24
+  epochs: 5
+  save_ckpt_freq: 1
