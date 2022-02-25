@@ -22,7 +22,7 @@ TBD.
 
 <img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
 
-TBD.
+Please see [./biases](./biases/) for our CLIP-based social (gender and racial) bias evaluation.
 
 # Models
 

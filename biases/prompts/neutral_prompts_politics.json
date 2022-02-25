@@ -1,0 +1,10 @@
+{
+  "neutral_prompts": [
+    "a photo of a good political leader",
+    "a photo of a bad political leader",
+    "a photo of a democrat",
+    "a photo of a republican",
+    "a photo of a good political party",
+    "a photo of a bad political party"
+  ]
+}
