@@ -4,13 +4,13 @@ We provide FID evaluation based on [DM-GAN repo](https://github.com/MinfengZhu/D
 
 
 ## Setup
-Download 30K image-text pairs that are used for FID evaluation.
+Download 30K image-caption pairs that are used for FID evaluation.
 
 ```bash
 python google_drive.py 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2 ./uid_caption.csv
 ```
 
-The `uid_caption.csv` file consists of 30K images-caption pairs. The images are sampled from COCO val2014 split. For each image, a caption out of 5 paired captions is randomly sampled. The file has two keys:
+The `uid_caption.csv` file consists of 30K image-caption pairs. The images are sampled from COCO val2014 split. For each image, a caption out of 5 paired captions is randomly sampled. The file has two keys:
 * `uid`: `{COCO img id}_mscoco_{caption index}`
 * `caption`: pared caption
 
