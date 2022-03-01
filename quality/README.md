@@ -34,7 +34,7 @@ uid,caption
 python google_drive.py 10NYi4XU3_bLjPEAg5KQal-l8A_d8lnL5 FID/coco_val.npz
 ```
 
-2) Generate 30K images from the captions of `uid_caption.csv` in a directory `image_dir`. The images should be either `.jpg` or `.png` format.
+2) Generate 30K images from the captions of `uid_caption.csv` in a directory `$image_dir`. The images should be either `.jpg` or `.png` format.
 
 
 3) Calculate FID
@@ -43,6 +43,6 @@ cd FID
 python fid_score.py \
     --batch-size 100 \
     --gpu 0 \
-    --path1 coco_val.npz
-    --path2 image_dir
+    --path1 coco_val.npz \
+    --path2 $image_dir
 ```
