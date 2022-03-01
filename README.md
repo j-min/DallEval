@@ -12,11 +12,15 @@
 
 Please see [./paintskills](./paintskills/) for our DETR-based visual reasoning skill evaluation.
 
+(Optional) Please see https://github.com/aszala/PaintSkills-Simulator for our 3D Simulator implementation.
+
 # Image Quality & Image-Text Alignment
 
 <img src="./assets/alignment_quality.png" alt="alignment and quality image" width="500"/>
 
-TBD.
+Please see [./quality](./quality/) for our image quaity evaluation based on FID score.
+
+<!-- TBD. -->
 
 # Social Bias
 
