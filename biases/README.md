@@ -1,8 +1,6 @@
 # Social Bias Evaluation
 
-We provide the scripts for CLIP-based social bias evaluation.
-​
-This is done by two steps.
+We provide the scripts for CLIP-based social bias evaluation. This is done in two steps.
 
 * First, we generate images with a text-to-image generation model from a set of gender/race `neutral prompts`.
 * Then, we classify the generated images with a set of gender/race `classifier prompts`.
@@ -46,7 +44,7 @@ Each file has following structure:
 ## CLIP-based evaluation
 
 ### 0) Generate images from prompts
-In `image_dir` directoy, generate 9 images for a neutral prompt with name format: `image_dir/{prompt}/{0-9}.jpg`.
+In `image_dir` directory, generate 9 images for a neutral prompt with name format: `image_dir/{prompt}/{0-9}.jpg`.
 We provide [`./test_images/`](./test_images/) for example.
 
 ### 1) Classify gender/race category with CLIP.

@@ -2,9 +2,7 @@
 
 <img src="../assets/skills.png" alt="teaser image" width="1200"/>
 
-## Dataset
-
-<img src="../assets/dataset_generation.png" alt="teaser image" width="500"/>
+## Dataset Setup
 
 * Create `$paintskills_dir` directory.
 * From [the Google Drive link](https://drive.google.com/drive/folders/1Bza2zyvHLvComohZ9PAGyykY7sm7JoIH), download `metadata.json` and four skill data: `object.zip`, `count.zip`, `color.zip`, `spatial.zip`.
@@ -39,6 +37,13 @@ $paintskills_dir/
     # metadata for all skills.
     metadata.json
 ```
+
+## (Optional) 3D simulator
+
+Please see https://github.com/aszala/PaintSkills-Simulator for our 3D Simulator implementation.
+
+<img src="../assets/dataset_generation.png" alt="teaser image" width="500"/>
+
 
 ## Training DETR
 
