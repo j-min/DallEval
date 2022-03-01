@@ -4,7 +4,7 @@ We provide FID evaluation based on [DM-GAN repo](https://github.com/MinfengZhu/D
 
 
 ## Setup
-Download 30K COCO val 2014 images
+Download 30K image-text pairs that are used for FID evaluation.
 
 ```bash
 python google_drive.py 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2 ./uid_caption.csv
