@@ -45,7 +45,7 @@ Please see https://github.com/aszala/PaintSkills-Simulator for our 3D Simulator 
 <img src="../assets/dataset_generation.png" alt="teaser image" width="500"/>
 
 
-## Training DETR
+## (Optional) Training DETR
 
 For DETR-specific details, please see [./detr/README.md](./detr/README.md) written by original DETR developers.
 
@@ -84,6 +84,10 @@ bash scripts/evaluate_skill.sh \
 bash scripts/evaluate_skill.sh \
     --skill_name spatial --gt_data_eval --paintskills_dir $paintskills_dir
 ```
+
+## Download pretrained DETR checkpoints
+
+Download checkpoint for each skill from [the Google Drive link](https://drive.google.com/drive/folders/1qZr0biroWR5WV6wXD0BMZHiO1sgsqlCD) at `detr/output/$skill/checkpoint.pth`.
 
 ## Evaluation of Text2Img models with DETR
 
