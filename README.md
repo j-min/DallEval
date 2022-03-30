@@ -20,7 +20,7 @@ Please see [./paintskills](./paintskills/) for our DETR-based visual reasoning s
 
 Please see [./quality](./quality/) for our image quaity evaluation based on FID score.
 
-<!-- TBD. -->
+Please see [./retrieval](./retrieval/) for our image-text alignment evaluation with CLIP-based R-precision.
 
 # Social Bias
 
