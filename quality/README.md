@@ -7,7 +7,8 @@ We provide FID evaluation based on [DM-GAN repo](https://github.com/MinfengZhu/D
 Download 30K image-caption pairs that are used for FID evaluation.
 
 ```bash
-python google_drive.py 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2 ./uid_caption.csv
+# pip install gdown
+gdown 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2
 ```
 
 The `uid_caption.csv` file consists of 30K image-caption pairs. The images are sampled from COCO val2014 split. For each image, a caption out of 5 paired captions is randomly sampled. The file has two keys:
@@ -31,7 +32,8 @@ uid,caption
 
 1) Download pre-computed COCO statistics for FID [from DM-GAN repo](https://drive.google.com/file/d/10NYi4XU3_bLjPEAg5KQal-l8A_d8lnL5).
 ```bash
-python google_drive.py 10NYi4XU3_bLjPEAg5KQal-l8A_d8lnL5 FID/coco_val.npz
+# pip install gdown
+gdown 10NYi4XU3_bLjPEAg5KQal-l8A_d8lnL5 -O FID/coco_val.npz
 ```
 
 2) Generate 30K images from the captions of `uid_caption.csv` in a directory `$image_dir`. The images should be either `.jpg` or `.png` format.

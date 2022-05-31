@@ -1,4 +1,4 @@
-# Image-text Alignment Evaluation
+# Image-text Alignment Evaluation - Retrieval
 
 We provide CLIP-based R-precision evaluation.
 
@@ -7,7 +7,8 @@ We provide CLIP-based R-precision evaluation.
 Download 30K image-caption pairs.
 
 ```bash
-python google_drive.py 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2 ./uid_caption.csv
+# pip install gdown
+gdown 1au9DI9tr-dcfGMFxFkFrJt0p_htojxH2
 ```
 
 The `uid_caption.csv` file consists of 30K image-caption pairs. The images are sampled from COCO val2014 split. For each image, a caption out of 5 paired captions is randomly sampled. The file has two keys:

@@ -22,6 +22,8 @@ Please see [./quality](./quality/) for our image quaity evaluation based on FID 
 
 Please see [./retrieval](./retrieval/) for our image-text alignment evaluation with CLIP-based R-precision.
 
+Please see [./captioning](./captioning/) for our image-text alignment evaluation with VL-T5 captioning.
+
 # Social Bias
 
 <img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
