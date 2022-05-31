@@ -5,7 +5,7 @@ We provide captioning-based evaluation with VL-T5.
 
 ## Setup
 
-1) Download `karpathy_test_text.json` from [google drive](https://drive.google.com/drive/folders/1sjRYjZUISdLgawlciU08OGiuxz3QfDWB).
+1) Download `karpathy_test_text.json` from [google drive](https://drive.google.com/drive/folders/1eNeXzzhB7q9XCD_CNvNI0QZJINlUsE04).
 
 
 ```bash
@@ -54,7 +54,7 @@ While this Hugginface FRCNN implementation is easy to work with custom images, w
 Therefore, we finetune VL-T5 with this new FRCNN and provide this checkpoint for consistency. We used this checkpoint for our caption based evaluations.
 The change of visual encoder made slight drop in the captioning performance for VL-T5 (e.g., BLUE@4: 34 -> 31 for Karpathy test split).
 
-Download `dataset_coco.json` and `VLT5_HF_FRCNN_COCOCaption.pth` from [google drive](https://drive.google.com/drive/folders/1sjRYjZUISdLgawlciU08OGiuxz3QfDWB).
+Download `dataset_coco.json` and `VLT5_HF_FRCNN_COCOCaption.pth` from [google drive](https://drive.google.com/drive/folders/1eNeXzzhB7q9XCD_CNvNI0QZJINlUsE04).
 
 
 ```bash
