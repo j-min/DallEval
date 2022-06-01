@@ -25,9 +25,9 @@ if __name__ == '__main__':
     args.gpu = 0
     print(args)
 
-    args.ckpt_path = 'VLT5_HF_FRCNN_COCOCaption.pth',
-    args.image_dir = "image_dir",
-    args.eval_results_path = "eval_results.json",
+    args.ckpt_path = 'VLT5_HF_FRCNN_COCOCaption.pth'
+    args.image_dir = "image_dir"
+    args.eval_results_path = "eval_results.json"
 
     trainer = Trainer(args, train=False)
 
