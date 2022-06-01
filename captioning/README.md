@@ -46,6 +46,7 @@ The `karpathy_test_text.json` file contains 5000 items of image id - caption pai
 git clone https://github.com/j-min/VL-T5
 cd VL-T5
 pip install -r requirements.txt
+pip install opencv-python
 ```
 
 ### Difference in visual feature between VL-T5 and this VL-T5 implementation
