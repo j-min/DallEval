@@ -3,6 +3,7 @@ from tqdm import tqdm
 from pathlib import Path
 import json
 import torch
+from more_itertools import chunked
 from pprint import pprint
 
 
@@ -21,17 +22,20 @@ from inference.utils import Config
 if __name__ == '__main__':
     args = parse_args(
         parse=False,
+        num_beams=5, # Don't change this
+        batch_size=100, # You may change this to adjust memory/inference speed
     )
     args.gpu = 0
     print(args)
 
-    args.ckpt_path = 'VLT5_HF_FRCNN_COCOCaption.pth'
-    args.image_dir = "image_dir"
-    args.eval_results_path = "eval_results.json"
+    image_dir = "image_dir" # UPDATE_THIS_PATH
+
+    ckpt_path = 'VLT5_HF_FRCNN_COCOCaption.pth'
+    eval_results_path = "eval_results.json"
 
     trainer = Trainer(args, train=False)
 
-    trainer.load_checkpoint(args.ckpt_path)
+    trainer.load_checkpoint(ckpt_path)
     trainer.model.eval();
     print('Loaded VL-T5 captioning model!')
 
@@ -104,39 +108,56 @@ if __name__ == '__main__':
     predictions = []
     targets = []
 
-    model_img_dir = Path(args.image_dir)
-    fname_list = list(model_img_dir.glob('*.jpg'))
+    fname_list = list(Path(image_dir).glob('*.jpg'))
 
-    for i, fname in enumerate(tqdm(fname_list, desc='Generating captions...')):
+    B = args.batch_size
+
+    for batch_fnames in chunked(tqdm(fname_list, 'Generating captions...'), n=B):
         with torch.no_grad():
 
-            images, sizes, scales_yx = image_preprocess(str(fname))
+            feats = torch.zeros(B, 36, 2048)
+            boxes = torch.zeros(B, 36, 4)
+            for j, fname in enumerate(batch_fnames):
+                img_id = fname.stem
+                targets.append(imgid2targets[img_id])
 
-            output_dict = frcnn(
-                images,
-                sizes,
-                scales_yx=scales_yx,
-                padding='max_detections',
-                max_detections=frcnn_cfg.max_detections,
-                return_tensors='pt'
-            )
+                images, sizes, scales_yx = image_preprocess(str(fname))
 
-            normalized_boxes = output_dict.get("normalized_boxes")
-            features = output_dict.get("roi_features")
+                output_dict = frcnn(
+                    images,
+                    sizes,
+                    scales_yx=scales_yx,
+                    padding='max_detections',
+                    max_detections=frcnn_cfg.max_detections,
+                    return_tensors='pt'
+                )
+
+                normalized_boxes = output_dict.get("normalized_boxes")
+                normalized_boxes.clamp_(min=0.0, max=1.0)
+                features = output_dict.get("roi_features")
+
+                feats[j] = features
+                boxes[j] = normalized_boxes
+
+            input_ids = trainer.tokenizer(['caption:'], return_tensors='pt').input_ids
+            input_ids = input_ids.view(1, -1)
+            input_ids = input_ids.expand(B, -1)
 
             batch = {}
-            batch['vis_feats'] = features
-            batch['input_ids'] = trainer.tokenizer(['caption:'], return_tensors='pt').input_ids
-            batch['boxes'] = normalized_boxes
+            batch['input_ids'] = input_ids
+            batch['vis_feats'] = feats
+            batch['boxes'] = boxes
+
+            gen_kwargs = {}
+            gen_kwargs['num_beams'] = args.num_beams
+            gen_kwargs['max_length'] = args.gen_max_length
 
             gen_caption = trainer.model.test_step(
-                batch
-            )['pred'][0]
+                batch,
+                **gen_kwargs
+            )['pred']
 
-        predictions.append(gen_caption)
-
-        img_id = fname.stem
-        targets.append(imgid2targets[img_id])
+        predictions.extend(gen_caption)
 
     eval_results = evaluator.evaluate(predictions, targets)
     print('Eval results')
@@ -149,5 +170,5 @@ if __name__ == '__main__':
         'metrics': eval_results
     }
 
-    with open(args.eval_results_path, 'w') as f:
+    with open(eval_results_path, 'w') as f:
         json.dump(results, f, indent=4)

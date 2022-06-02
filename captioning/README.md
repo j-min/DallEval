@@ -9,7 +9,7 @@ We provide captioning-based evaluation with VL-T5.
 
 
 ```bash
-# karpathy_test_text.jso
+# karpathy_test_text.json
 gdown 1nxbCbRA0c7pPGJbT8tCfqKOxMgrQ6hsA
 ```
 
@@ -47,6 +47,7 @@ git clone https://github.com/j-min/VL-T5
 cd VL-T5
 pip install -r requirements.txt
 pip install opencv-python
+python -c "import language_evaluation; language_evaluation.download('coco')"
 ```
 
 ### Difference in visual feature between VL-T5 and this VL-T5 implementation
@@ -66,21 +67,20 @@ gdown 1dGVf6dCpddpvHT85TWnHiHOaQ9p_6Xuq
 gdown 1jDi6spmY892eO2AWvvzESixX-YZXISiz
 ```
 
-4) Run evaluation script
+4) Run evaluation script - It takes around 10 mins on single RTX 2080 Ti GPU
+
 ```bash
 python run_caption_evaluation.py
 
 ...
 Eval results # based on GT COCO Images
-{
-    'Bleu_1': 0.737227164947394,
-    'Bleu_2': 0.5677760033468644,
-    'Bleu_3': 0.42301410683524954,
-    'Bleu_4': 0.3125204158572636,
-    'METEOR': 0.2639331643036797,
-    'ROUGE_L': 0.5439489553069495,
-    'CIDEr': 1.0464655726928305,
-    'SPICE': 0.19540839342910868
-}
+{'Bleu_1': 0.7237392516848571,
+ 'Bleu_2': 0.5633070870571786,
+ 'Bleu_3': 0.42804852307296365
+ 'Bleu_4': 0.325427941604873,
+ 'CIDEr': 1.0826244658301367,
+ 'METEOR': 0.2748594629606107,
+ 'ROUGE_L': 0.5527750831742165
+ 'SPICE': 0.20432732656681163}
 ...
 ```
