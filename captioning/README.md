@@ -84,3 +84,5 @@ Eval results # based on GT COCO Images
  'SPICE': 0.20432732656681163}
 ...
 ```
+<small> *In [the arxiv v1 pdf](https://arxiv.org/pdf/2202.04053v1.pdf) Table 7, there is a typo of GT (Up. bound) row SPICE = 55.3 which actually is the ROUGE-L value. We will update this in the later version.
+</small>
