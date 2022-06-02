@@ -103,7 +103,7 @@ if __name__ == '__main__':
     print('Loaded Karpathy test')
 
 
-    print('results will be saved at', args.eval_results_path)
+    print('results will be saved at', eval_results_path)
 
     predictions = []
     targets = []
