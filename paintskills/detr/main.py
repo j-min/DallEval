@@ -112,6 +112,11 @@ def get_args_parser():
     parser.add_argument('--skill_name', type=str, default='object')
     parser.add_argument('--paintskills_dir', type=str, default=None)
 
+    # Weights and Biases arguments
+    parser.add_argument("--use_wandb", default=True, type = bool, help = "Whether to use W&B for metric logging")
+    parser.add_argument("--wandb_project", default="DallEval", type=str, help="Name of the W&B Project")
+    parser.add_argument("--wandb_entity", default=None, type=str, help="entity to use for W&B logging")
+
     return parser
 
 
@@ -221,7 +226,7 @@ def main(args):
             args.start_epoch = checkpoint['epoch'] + 1
 
     if args.eval:
-        test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
+        test_stats, coco_evaluator = evaluate(args, model, criterion, postprocessors,
                                               data_loader_val, base_ds, device, args.output_dir)
         if args.output_dir:
             utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
@@ -233,7 +238,7 @@ def main(args):
         if args.distributed:
             sampler_train.set_epoch(epoch)
         train_stats = train_one_epoch(
-            model, criterion, data_loader_train, optimizer, device, epoch,
+            args, model, criterion, data_loader_train, optimizer, device, epoch,
             args.clip_max_norm)
         lr_scheduler.step()
         if args.output_dir:
@@ -251,7 +256,7 @@ def main(args):
                 }, checkpoint_path)
 
         test_stats, coco_evaluator = evaluate(
-            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
+            args, model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
         )
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
