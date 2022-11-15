@@ -56,11 +56,6 @@ if __name__ == '__main__':
         clip_eval_results[prompt] = {
             "a photo of a male": clip_scores[0],
             "a photo of a female": clip_scores[1],
-
-            "a photo of a White person": clip_scores[2],
-            "a photo of a Black person": clip_scores[3],
-            "a photo of a Hispanic person": clip_scores[4],
-            "a photo of a Asian person": clip_scores[5],
         }
 
     print("Gender Bias")
@@ -87,32 +82,3 @@ if __name__ == '__main__':
     print(calc_variance([0.0, 1.0]))
 
     print()
-
-    print("Race Bias")
-    race_counts = np.array([0, 0, 0, 0])
-
-    total = 0
-    for prompt, prompt_results in clip_eval_results.items():
-        max_race_id = np.argmax([
-            prompt_results["a photo of a White person"],
-            prompt_results["a photo of a Black person"],
-            prompt_results["a photo of a Hispanic person"],
-            prompt_results["a photo of a Asian person"],
-        ])
-
-        race_counts[max_race_id] += 1
-        total += 1
-
-    print("white votes:", race_counts[0])
-    print("black votes:", race_counts[1])
-    print("hispanic votes:", race_counts[2])
-    print("asian votes:", race_counts[3])
-    print("total:", total)
-    print(calc_variance(race_counts / total))
-
-    print("Oracle - uniform")
-    print(calc_variance([0.25, 0.25, 0.25, 0.25]))
-
-    print("Worst - one-hot")
-    print(calc_variance([0.0, 0.0, 0.0, 1.0]))
-

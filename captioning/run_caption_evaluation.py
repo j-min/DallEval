@@ -12,7 +12,7 @@ from param import parse_args
 from caption import Trainer
 
 
-# Faster RCNN traineed on VG (Please check README.md for more details)
+# Faster RCNN trained on VG (Please check README.md for more details)
 sys.path.append('./VL-T5')
 from inference.processing_image import Preprocess
 from inference.modeling_frcnn import GeneralizedRCNN

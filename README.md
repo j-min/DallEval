@@ -1,7 +1,7 @@
 # DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers
 
 
-* Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://aszala.com/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/) (UNC Chapel Hill)
+* Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://www.cs.unc.edu/~aszala/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/) (UNC Chapel Hill)
 * [Paper](https://arxiv.org/abs/2202.04053)
 
 <img src="./assets/teaser.png" alt="teaser image" width="500"/>
@@ -32,11 +32,11 @@ Please see [./biases](./biases/) for our CLIP-based social (gender and racial) b
 
 # Models
 
-We provide training and inference scripts for [DALLE-small](./models/dalle_small/) (DALLE-pytorch), [ruDALL-E XL](./models/rudalle/), [minDALL-E](models/mindalle), and [X-LXMERT](./models/xlxmert/).
+We provide inference scripts for [DALLE-small](./models/dalle_small/) (DALLE-pytorch), [minDALL-E](models/mindalle), [X-LXMERT](./models/xlxmert/), and [Stable Diffusion](./models/stable_diffusion/).
 
 
 # Acknowledgments
-We thank the developers of [DETR](https://github.com/facebookresearch/detr), [DALLE-pytorch](https://github.com/lucidrains/DALLE-pytorch), [ruDALL-E](https://github.com/sberbank-ai/ru-dalle), [minDALL-E](https://github.com/kakaobrain/minDALL-E), and [X-LXMERT](https://github.com/allenai/x-lxmert), for their public code release.
+We thank the developers of [DETR](https://github.com/facebookresearch/detr), [DALLE-pytorch](https://github.com/lucidrains/DALLE-pytorch), [minDALL-E](https://github.com/kakaobrain/minDALL-E), [X-LXMERT](https://github.com/allenai/x-lxmert), and [Stable Diffusion](https://github.com/CompVis/stable-diffusion) for their public code release.
 
 # Reference
 Please cite our paper if you use our dataset in your works:

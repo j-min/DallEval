@@ -38,7 +38,8 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 import torch
 import numpy as np
-from scipy.misc import imread
+# from scipy.misc import imread
+from imageio import imread
 from scipy import linalg
 from torch.autograd import Variable
 from torch.nn.functional import adaptive_avg_pool2d
@@ -212,7 +213,7 @@ def calculate_activation_statistics(images, model, batch_size=64,
 
 def _compute_statistics_of_path(path, model, batch_size, dims, cuda):
     if path.endswith('.npz'):
-        f = np.load(path)
+        f = np.load(path, allow_pickle=True)
         m, s = f['mu'][:], f['sigma'][:]
         f.close()
 

@@ -11,8 +11,10 @@ import clip
 
 
 def clip_forward(model, image, text):
+    tokens = clip.tokenize(text).to(device)
+
     image_features = model.encode_image(image)
-    text_features = model.encode_text(text)
+    text_features = model.encode_text(tokens)
 
     # normalized features
     image_features = image_features / image_features.norm(dim=-1, keepdim=True)
@@ -50,7 +52,7 @@ if __name__ == '__main__':
     print(f"Loaded {len(neutral_prompts)} neutral prompts")
 
     classifier_prompts = []
-    for prompt_type in ["gender", "race"]:
+    for prompt_type in ["gender"]:
         with open(f'prompts/classifier_prompts_{prompt_type}.json', 'r') as f:
             classifier_prompts += json.load(f)["classifier_prompts"]
     print(f"Loaded {len(classifier_prompts)} classifier prompts")
@@ -61,20 +63,12 @@ if __name__ == '__main__':
     model.eval()
     print(f'Loaded CLIP at {device}')
 
-    gender_classifier_prompts = classifier_prompts[:2]
-    race_classifier_prompts = classifier_prompts[2:]
-
-    gender_classifier_prompts = clip.tokenize(gender_classifier_prompts).to(device)
-    race_classifier_prompts = clip.tokenize(race_classifier_prompts).to(device)
-
     prompt2scores = {}
 
     for neutral_prompt in tqdm(neutral_prompts):
         prompt2scores[neutral_prompt] = []
 
-        prompt_generated_images_dir = Path(image_dir).joinpath(
-            neutral_prompt
-        )
+        prompt_generated_images_dir = Path(image_dir) / neutral_prompt
 
         img_path_list = list(prompt_generated_images_dir.glob('*.jpg'))
 
@@ -82,20 +76,15 @@ if __name__ == '__main__':
             image = preprocess(Image.open(img_path)).unsqueeze(0).to(device)
 
             with torch.no_grad():
-                logits_per_image, logits_per_text = clip_forward(model, image, gender_classifier_prompts)
-                logits_per_image2, logits_per_text2 = clip_forward(model, image, race_classifier_prompts)
+                logits_per_image, logits_per_text = clip_forward(model, image, classifier_prompts)
 
                 classifier_probs_gender = logits_per_image.softmax(dim=-1).cpu().numpy()
-                classifier_probs_race = logits_per_image2.softmax(dim=-1).cpu().numpy()
 
-            classifier_probs = np.append(
-                classifier_probs_gender[0],
-                classifier_probs_race[0]
-            )
+            classifier_probs = np.append(classifier_probs_gender[0])
             prompt2scores[neutral_prompt].append(classifier_probs)
 
         n_images_per_prompt = len(img_path_list)
-        assert n_images_per_prompt == 9, (neutral_prompt, n_images_per_prompt)
+        # assert n_images_per_prompt == 9, (neutral_prompt, n_images_per_prompt)
 
     # merge classifier probs
     for neutral_prompt in neutral_prompts:

@@ -9,22 +9,25 @@ from main import get_args_parser
 if __name__ == '__main__':
     parser = get_args_parser()
 
-    parser.add_argument('--paintskills_dir', type=str, default='../datasets/PaintSkills')
-
     parser.add_argument('--gt_data_eval', action='store_true', help="whether to evaluate on the ground truth data")
 
-    parser.add_argument('--gen_model', type=str, default='dalle_small', help="which model images to be evaluated")
-    parser.add_argument('--FT', action='store_true', help="whether to use the finetuned model images")
+    parser.add_argument('--gen_model', type=str, default=None)
+
+    parser.add_argument('--FT', action='store_true')
 
     parser.add_argument('--p_threshold', type=float, default=0.7)
 
     parser.add_argument('--result_dump_path', type=str, default=None, help="path to dump the evaluation results")
 
+    parser.add_argument('--image_dir', type=str, default=None)
+
+    parser.add_argument('--ignore_other_classes', action='store_true')
+
+    parser.add_argument('--split', type=str, default='val')
 
 
     args = parser.parse_args()
 
-    args.split = 'val'
     skill_name = args.skill_name
     split = args.split
 
@@ -35,10 +38,16 @@ if __name__ == '__main__':
         print("Result will be dumped at:", result_dump_path)
 
     # Load DETR checkpoint
-    args.resume = f'./output/{skill_name}/checkpoint.pth'
-
-    if skill_name == 'color':
-        args.num_colors = 6
+    if args.resume == '':
+        if args.FT:
+            if args.resume == '':
+                args.resume = '/nas-ssd/jmincho/datasets/PaintSkillsNEW/checkpoints/DETR_skills/allskills/checkpoint.pth'
+                # args.resume = f'./output/{skill_name}/checkpoint.pth'
+        else:
+            if args.backbone == 'resnet50':
+                args.resume = './checkpoints/detr-r50-e632da11.pth'
+            else:
+                args.resume = './checkpoints/detr-r101-dc5-a2e86def.pth'
 
     print(args)
     print('Building model')
@@ -63,39 +72,17 @@ if __name__ == '__main__':
     metadata_path = paintskills_dir.joinpath('metadata.json')
     print('metadata:', metadata_path)
 
-    if args.gt_data_eval:
-        image_dir = paintskills_dir.joinpath(f'{skill_name}/images/')
+    if args.image_dir is None:
+        if args.gt_data_eval:
+            image_dir = paintskills_dir.joinpath(f'{skill_name}/images/')
+        else:
+            print("Please specify --image_dir")
+            exit(1)
+
     else:
-        if 'dalle_small' in args.gen_model:
-            if args.FT:
-                dump_name = f'{skill_name}_CC_{split}'
-            else:
-                dump_name = f'{skill_name}_CCzero_{split}'
-            image_dir = paintskills_dir.joinpath(f'DalleSmall_inference/{dump_name}')
+        image_dir = Path(args.image_dir)
 
-        elif 'rudalle' in args.gen_model:
-            if args.FT:
-                dump_name = f'{skill_name}_{split}'
-            else:
-                dump_name = f'{skill_name}_zero_{split}'
-
-            image_dir = paintskills_dir.joinpath(f'rudalle_inference/{dump_name}')
-
-        elif 'mindalle' in args.gen_model:
-            if args.FT:
-                dump_name = f'{skill_name}_CC_{split}'
-            else:
-                dump_name = f'{skill_name}_CCzero_{split}'
-
-            image_dir = paintskills_dir.joinpath(f'minDALLE_inference/{dump_name}')
-
-        elif 'xlxmert' in args.gen_model:
-            assert args.FT is False
-            dump_name = f'{skill_name}_{split}'
-            image_dir = paintskills_dir.joinpath(f'XLXMERT_inference/{dump_name}')
-
-
-        print('Loading images from', image_dir)
+    print('Loading images from', image_dir)
 
     ann_path = paintskills_dir.joinpath(f'{skill_name}/scenes/{skill_name}_{split}.json')
 
@@ -110,18 +97,6 @@ if __name__ == '__main__':
         )
 
         results = eval_object(dataset, model, args)
-
-    elif skill_name == 'color':
-        from datasets.skill_eval import ColorDataset, eval_color
-
-        dataset = ColorDataset(
-            image_dir=image_dir,
-            ann_path=ann_path,
-            metadata_path=metadata_path,
-            args=args,
-        )
-
-        results = eval_color(dataset, model, args)
 
     elif skill_name == 'count':
         from datasets.skill_eval import CountDataset, eval_count
@@ -148,4 +123,4 @@ if __name__ == '__main__':
         results = eval_spatial(dataset, model, args)
 
     if args.result_dump_path is not None:
-        json.dump(results, open(args.result_dump_path, 'w'))
+        json.dump(results, open(args.result_dump_path, 'w'), indent=4)
