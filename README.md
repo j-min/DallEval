@@ -28,7 +28,7 @@ Please see [./captioning](./captioning/) for our image-text alignment evaluation
 
 <img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
 
-Please see [./biases](./biases/) for our CLIP-based social (gender and racial) bias evaluation.
+Please see [./biases](./biases/) for our social (gende and skin tone) bias evaluation.
 
 # Models
 
