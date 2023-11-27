@@ -11,6 +11,7 @@ import contextlib
 import copy
 import numpy as np
 import torch
+import random
 
 import json
 
@@ -22,7 +23,6 @@ from PIL import Image
 from tqdm import tqdm
 
 from torchvision import transforms as T
-
 
 def paintskills_object_to_coco_names(obj):
     if 'human' in obj:
@@ -58,7 +58,6 @@ COCO_CLASSES = [
     'toothbrush'
 ]
 
-
 class PaintSkillsDETREvaluationDataset(Dataset):
     def __init__(self, image_dir, ann_path, metadata_path, args=None):
         self.args = args
@@ -84,7 +83,6 @@ class PaintSkillsDETREvaluationDataset(Dataset):
     def __len__(self):
         return len(self.ann_data['data'])
 
-
 class ObjectDataset(PaintSkillsDETREvaluationDataset):
 
     def __getitem__(self, ix):
@@ -99,9 +97,18 @@ class ObjectDataset(PaintSkillsDETREvaluationDataset):
             fname = datum['id']
             img_path = self.image_dir.joinpath(fname).with_suffix('.png')
 
-        img = Image.open(img_path)
+        if self.args.shuffle_baseline:
+            # pick a random image
+            datum = random.choice(self.ann_data['data'])
+            fname = f"image_{datum['id']}"
+            img_path = self.image_dir.joinpath(fname).with_suffix('.png')
+        
+
+        img = Image.open(img_path).convert('RGB')
+        out['img'] = img
 
         out['img_id'] = str(img_path)
+        out['img_path'] = img_path
 
         out['width'] = img.width
         out['height'] = img.height
@@ -114,11 +121,14 @@ class ObjectDataset(PaintSkillsDETREvaluationDataset):
     def collate_fn(self, batch):
         out = deepcopy(batch[0])
 
+        out['imgs'] = [x['img'] for x in batch]
+
         out['img_tensors'] = [x['img_tensor'] for x in batch]
         out['img_tensors'] = torch.stack(out['img_tensors'], 0)
 
         out['target'] = []
         out['img_ids'] = []
+        out['img_paths'] = [x['img_path'] for x in batch]
         for datum in batch:
             shape = datum['objects'][0]['shape']
             if 'human' in shape:
@@ -134,7 +144,7 @@ class ObjectDataset(PaintSkillsDETREvaluationDataset):
         return out
 
 
-def eval_object(dataset, model, args):
+def eval_object(dataset, model, postprocessors, args):
     dataloader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -151,6 +161,12 @@ def eval_object(dataset, model, args):
     device = 'cuda'
 
     model = model.to(device)
+
+    if args.viz_save_dir is not None:
+        from util.viz_utils import plot_results, fig2img
+        save_dir = Path(args.viz_save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        print('Saving visualizations to', save_dir)
 
     results = []
     obj_specific_results = {}
@@ -188,17 +204,15 @@ def eval_object(dataset, model, args):
 
         target = batch["target"].to(device)
 
-        # print('probas:', probas)
-        # print('pred_id:', pred_id)
-        # print('target:', target)
-
-        # break
-
         correct = pred_id == target
         # correct = correct.float()
 
         total += B
         total_correct += correct.sum().item()
+
+        orig_size = batch['imgs'][0].size
+        orig_target_sizes = torch.tensor([orig_size] * B, dtype=torch.long, device=device)
+        pred_results = postprocessors['bbox'](outputs, orig_target_sizes)
 
         for j in range(B):
             results.append({
@@ -219,6 +233,36 @@ def eval_object(dataset, model, args):
                 'pred_confidence': pred_prob[j].item(),
                 'target_object': dataset.ix_to_shape[target[j].item()]
             })
+
+            if args.viz_save_dir is not None:
+
+                img = batch['imgs'][j]
+                W, H = img.size
+                det_normalized_xyxy_boxes = []
+                det_box_captions = []
+
+                boxes = pred_results[j]['boxes'].tolist()
+                labels = pred_results[j]['labels'].tolist()
+                keep = pred_results[j]['scores'].tolist()
+
+                for k in range(len(pred_results[j]['boxes'])):
+                    if keep[k] > args.p_threshold:
+                        x1, y1, x2, y2 = boxes[k]
+                        det_normalized_xyxy_boxes.append([x1/W, y1/H, x2/W, y2/H])
+
+                        label = labels[k]
+                        det_box_captions.append(dataset.ix_to_shape[label])
+
+                det_viz_img = fig2img(plot_results(
+                    img,
+                    det_normalized_xyxy_boxes,
+                    det_box_captions,
+                    # colors=gt_box_colors
+                    ))
+
+                save_path = save_dir.joinpath(batch['img_paths'][j].name)
+                det_viz_img.save(save_path)
+
 
         acc = total_correct / total
 
@@ -260,9 +304,17 @@ class CountDataset(PaintSkillsDETREvaluationDataset):
             fname = datum['id']
             img_path = self.image_dir.joinpath(fname).with_suffix('.png')
 
-        img = Image.open(img_path)
+        if self.args.shuffle_baseline:
+            # pick a random image
+            datum = random.choice(self.ann_data['data'])
+            fname = f"image_{datum['id']}"
+            img_path = self.image_dir.joinpath(fname).with_suffix('.png')
+
+        img = Image.open(img_path).convert('RGB')
+        out['img'] = img
 
         out['img_id'] = str(img_path)
+        out['img_path'] = img_path
 
         out['width'] = img.width
         out['height'] = img.height
@@ -281,6 +333,8 @@ class CountDataset(PaintSkillsDETREvaluationDataset):
         out['target'] = []
         out['count_target'] = []
         out['img_ids'] = []
+        out['img_paths'] = [x['img_path'] for x in batch]
+        out['imgs'] = [x['img'] for x in batch]
 
         for i, datum in enumerate(batch):
             out['img_ids'].append(datum['img_id'])
@@ -305,7 +359,7 @@ class CountDataset(PaintSkillsDETREvaluationDataset):
         return out
 
 
-def eval_count(dataset, model, args):
+def eval_count(dataset, model, postprocessors, args):
     dataloader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -324,6 +378,12 @@ def eval_count(dataset, model, args):
     device = 'cuda'
 
     model = model.to(device)
+
+    if args.viz_save_dir is not None:
+        from util.viz_utils import plot_results, fig2img
+        save_dir = Path(args.viz_save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        print('Saving visualizations to', save_dir)
 
     results = []
     obj_specific_results = {}
@@ -352,11 +412,18 @@ def eval_count(dataset, model, args):
         if args.p_threshold is not None:
             pred_n = (max_prob > args.p_threshold).sum(1)
 
-        n_pred_objs_batch = pred_n.clamp(min=1)
+        # n_pred_objs_batch = pred_n.clamp(min=1)
+        n_pred_objs_batch = pred_n
 
         count_correct = pred_n == batch['count_target'].to(device)
 
         correct = torch.zeros(B).to(device)
+
+
+        orig_size = batch['imgs'][0].size
+        orig_target_sizes = torch.tensor([orig_size] * B, dtype=torch.long, device=device)
+        pred_results = postprocessors['bbox'](outputs, orig_target_sizes)
+
         for i in range(B):
             gt_n = batch['count_target'][i].item()
 
@@ -379,6 +446,7 @@ def eval_count(dataset, model, args):
             # all predicted obj class should be GT obj classes
             correct_n = probas_n_objs_id == target_class_id
             correct[i] = correct_n.sum().item() == gt_n
+
 
         for j in range(B):
             results.append({
@@ -413,6 +481,36 @@ def eval_count(dataset, model, args):
                 'count_correct': count_correct[j].item(),
             })
 
+            if args.viz_save_dir is not None:
+
+                img = batch['imgs'][j]
+                W, H = img.size
+                det_normalized_xyxy_boxes = []
+                det_box_captions = []
+
+                boxes = pred_results[j]['boxes'].tolist()
+                labels = pred_results[j]['labels'].tolist()
+                keep = pred_results[j]['scores'].tolist()
+
+                for k in range(len(pred_results[j]['boxes'])):
+                    if keep[k] > args.p_threshold:
+                        x1, y1, x2, y2 = boxes[k]
+                        det_normalized_xyxy_boxes.append([x1/W, y1/H, x2/W, y2/H])
+
+                        label = labels[k]
+                        det_box_captions.append(dataset.ix_to_shape[label])
+
+                det_viz_img = fig2img(plot_results(
+                    img,
+                    det_normalized_xyxy_boxes,
+                    det_box_captions,
+                    # colors=gt_box_colors
+                    ))
+
+                save_path = save_dir.joinpath(batch['img_paths'][j].name)
+                det_viz_img.save(save_path)
+
+
         total += B
         total_correct += correct.sum().item()
         total_count_correct += count_correct.sum().item()
@@ -441,11 +539,10 @@ def eval_count(dataset, model, args):
         obj_acc = sum([x['correct'] for x in obj_specific_results[obj]]) / len(obj_specific_results[obj])
         print(f'{obj} Acc: {obj_acc * 100:.2f}%')
 
-    for count in count_specific_results.keys():
+    for count in sorted(count_specific_results.keys()):
         if len(count_specific_results[count]) == 0:
             continue
-        count_acc = sum([x['count_correct'] for x in count_specific_results[count]]) / \
-            len(count_specific_results[count])
+        count_acc = sum([x['count_correct'] for x in count_specific_results[count]]) / len(count_specific_results[count])
         print(f'count-{count} Acc: {count_acc * 100:.2f}%')
 
     obj_specific_results['all'] = results
@@ -468,10 +565,17 @@ class SpatialDataset(PaintSkillsDETREvaluationDataset):
             fname = datum['id']
             img_path = self.image_dir.joinpath(fname).with_suffix('.png')
 
-        img = Image.open(img_path)
+        if self.args.shuffle_baseline:
+            # pick a random image
+            datum = random.choice(self.ann_data['data'])
+            fname = f"image_{datum['id']}"
+            img_path = self.image_dir.joinpath(fname).with_suffix('.png')
+
+        img = Image.open(img_path).convert('RGB')
 
         out['img_id'] = str(img_path)
         out['img'] = img
+        out['img_path'] = img_path
 
         out['width'] = img.width
         out['height'] = img.height
@@ -494,6 +598,7 @@ class SpatialDataset(PaintSkillsDETREvaluationDataset):
 
         out['img_ids'] = []
         out['imgs'] = []
+        out['img_paths'] = [x['img_path'] for x in batch]
 
         for i, datum in enumerate(batch):
             out['img_ids'].append(datum['img_id'])
@@ -535,7 +640,7 @@ class SpatialDataset(PaintSkillsDETREvaluationDataset):
         return out
 
 
-def eval_spatial(dataset, model, args):
+def eval_spatial(dataset, model, postprocessors, args):
     dataloader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -555,6 +660,12 @@ def eval_spatial(dataset, model, args):
     device = 'cuda'
 
     model = model.to(device)
+
+    if args.viz_save_dir is not None:
+        from util.viz_utils import plot_results, fig2img
+        save_dir = Path(args.viz_save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        print('Saving visualizations to', save_dir)
 
     results = []
     # obj_specific_results = {}
@@ -586,6 +697,7 @@ def eval_spatial(dataset, model, args):
 
         assert len(batch['relations_target']) == B
 
+
         correct = torch.ones(B).to(device) * -1
         obj_correct = torch.ones(B).to(device) * -1
 
@@ -595,6 +707,10 @@ def eval_spatial(dataset, model, args):
 
         pred_obj_locs = []
         pred_obj_bbox = []
+
+        orig_size = batch['imgs'][0].size
+        orig_target_sizes = torch.tensor([orig_size] * B, dtype=torch.long, device=device)
+        pred_results = postprocessors['bbox'](outputs, orig_target_sizes)
 
         for i in range(B):
 
@@ -719,16 +835,9 @@ def eval_spatial(dataset, model, args):
                     correct[i] = 0
                     obj_correct[i] = 0
 
-                assert correct[i].min().item() in [0, 1], correct[i]
+                assert correct[i].min().item() in [0,1], correct[i]
 
             pred_rels.append(pred_rel)
-
-        # # break
-        # for j in range(B):
-        #     results.append({
-        #         'img_id': batch['img_ids'][j],
-        #         'correct': correct[j].item(),
-        #     })
 
         for j in range(B):
             results.append({
@@ -742,6 +851,7 @@ def eval_spatial(dataset, model, args):
                 'correct': bool(correct[j].item()),
                 'obj_correct': bool(obj_correct[j].item()),
             })
+
 
             if batch['relations_target'][j] not in relation_specific_results:
                 relation_specific_results[batch['relations_target'][j]] = []
@@ -758,13 +868,47 @@ def eval_spatial(dataset, model, args):
                 'obj_correct': bool(obj_correct[j].item()),
             })
 
+            if args.viz_save_dir is not None:
+
+                img = batch['imgs'][j]
+                W, H = img.size
+                det_normalized_xyxy_boxes = []
+                det_box_captions = []
+
+                boxes = pred_results[j]['boxes'].tolist()
+                labels = pred_results[j]['labels'].tolist()
+                keep = pred_results[j]['scores'].tolist()
+
+                for k in range(len(pred_results[j]['boxes'])):
+                    if keep[k] > args.p_threshold:
+                        x1, y1, x2, y2 = boxes[k]
+                        det_normalized_xyxy_boxes.append([x1/W, y1/H, x2/W, y2/H])
+
+                        label = labels[k]
+                        det_box_captions.append(dataset.ix_to_shape[label])
+
+                det_viz_img = fig2img(plot_results(
+                    img,
+                    det_normalized_xyxy_boxes,
+                    det_box_captions,
+                    # colors=gt_box_colors
+                    ))
+
+                n_detected = len(det_box_captions)
+
+                if n_detected != 2:
+                    correct[j] = 0
+                    obj_correct[j] = 0
+
+                save_path = save_dir / f"{batch['img_paths'][j].stem}.png"
+                det_viz_img.save(save_path)
+
         total += B
         total_correct += correct.sum().item()
         total_obj_correct += obj_correct.sum().item()
 
         acc = total_correct / total
         obj_acc = total_obj_correct / total
-        # color_acc = total_color_correct / total
 
         desc = f'Acc: {acc * 100: .2f} % | Obj Acc: {obj_acc * 100: .2f}%'
 
@@ -783,9 +927,9 @@ def eval_spatial(dataset, model, args):
 
     for relation in relation_specific_results:
         if len(relation_specific_results[relation]) > 0:
+            print(f'{relation}: {len(relation_specific_results[relation])} examples')
             print(f'{relation}: {np.mean([r["correct"] for r in relation_specific_results[relation]]) * 100:.2f}%')
 
     relation_specific_results['all'] = results
 
     return relation_specific_results
-    # return results

@@ -109,7 +109,7 @@ def get_args_parser():
     parser.add_argument('--color_loss_coef', default=5, type=float)
 
     parser.add_argument('--dataset_file', default='skill')
-    parser.add_argument('--skill_name', type=str, default='object')
+    parser.add_argument('--skill_name', type=str, default='object', choices=['object', 'count', 'spatial'])
     parser.add_argument('--paintskills_dir', type=str, default=None)
 
     return parser

@@ -1,4 +1,4 @@
-# DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers
+# DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generation Models (ICCV 2023)
 
 
 * Authors: [Jaemin Cho](https://j-min.io), [Abhay Zala](https://www.cs.unc.edu/~aszala/), and [Mohit Bansal](https://www.cs.unc.edu/~mbansal/) (UNC Chapel Hill)
@@ -14,6 +14,12 @@ Please see [./paintskills](./paintskills/) for our DETR-based visual reasoning s
 
 (Optional) Please see https://github.com/aszala/PaintSkills-Simulator for our 3D Simulator implementation.
 
+# Social Bias
+
+<img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
+
+Please see [./biases](./biases/) for our social (gender and skin tone) bias evaluation.
+
 # Image Quality & Image-Text Alignment
 
 <img src="./assets/alignment_quality.png" alt="alignment and quality image" width="500"/>
@@ -23,12 +29,6 @@ Please see [./quality](./quality/) for our image quaity evaluation based on FID 
 Please see [./retrieval](./retrieval/) for our image-text alignment evaluation with CLIP-based R-precision.
 
 Please see [./captioning](./captioning/) for our image-text alignment evaluation with VL-T5 captioning.
-
-# Social Bias
-
-<img src="./assets/bias_experiment_flow.png" alt="bias exp image" width="500"/>
-
-Please see [./biases](./biases/) for our social (gender and skin tone) bias evaluation.
 
 # Models
 
@@ -41,13 +41,10 @@ We thank the developers of [DETR](https://github.com/facebookresearch/detr), [DA
 # Reference
 Please cite our paper if you use our dataset in your works:
 ```bibtex
-
-@article{Cho2022DallEval,
-  title         = {DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Transformers},
+@inproceedings{Cho2023DallEval,
+  title         = {DALL-Eval: Probing the Reasoning Skills and Social Biases of Text-to-Image Generation Models},
   author        = {Jaemin Cho and Abhay Zala and Mohit Bansal},
-  year          = {2022},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  eprint        = {2202.04053}
+  year          = {2023},
+  booktitle     = {ICCV},
 }
 ```
