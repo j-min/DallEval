@@ -5,7 +5,7 @@
 ## Dataset Setup
 
 1) Create `$paintskills_dir` directory.
-2) From [the Google Drive link](https://drive.google.com/drive/folders/1xwD0Yv5iS-OndP8XxDwIhzaLA8IR582e), download `metadata.json` and three skill directories: `object/`, `count/`, `spatial/`, inside `$paintskills_dir`.
+2) From https://huggingface.co/datasets/j-min/PaintSkills, download `metadata.json` and three skill directories: `object/`, `count/`, `spatial/`, inside `$paintskills_dir`.
 
 
 * The `$paintskills_dir` directory has hierarchy as below:
