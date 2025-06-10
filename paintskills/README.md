@@ -4,13 +4,16 @@
 
 ## Dataset Setup
 
-1) Create `$paintskills_dir` directory.
-2) From https://huggingface.co/datasets/j-min/PaintSkills, download `metadata.json` and three skill directories: `object/`, `count/`, `spatial/`, inside `$paintskills_dir`.
+Download the dataset from https://huggingface.co/datasets/j-min/PaintSkills at `$PAINTSKILLS_DIR` directory.
 
-
-* The `$paintskills_dir` directory has hierarchy as below:
 ```bash
-$paintskills_dir/
+git clone https://huggingface.co/datasets/j-min/PaintSkills $PAINTSKILLS_DIR
+```
+
+
+* The `$PAINTSKILLS_DIR` directory has hierarchy as below:
+```bash
+$PAINTSKILLS_DIR/
     # skill name (i.e., object, count, and spatial)
     {skill}/
 
@@ -19,8 +22,16 @@ $paintskills_dir/
             {skill}_train.json
             {skill}_val.json
 
-        # GT Images (from {skill}/images.zip)
-        images/
+        # GT Images
+        val_images/
+            # e.g., 
+            # image_object_val_00000.png
+            # image_object_val_00001.png
+            # ...
+        train_images/
+            # image_object_train_00000.png
+            # image_object_train_00001.png
+            # ...
 
         # Bounding box annotations (for DETR finetuning)
         {skill}_train_bounding_boxes.json
@@ -70,12 +81,14 @@ e.g., `count_val.json`
 
 1) Run the evaluation script
 
+This script automatically downloads [the pretrained DETR checkpoint](https://huggingface.co/j-min/PaintSkills-DETR-R101-DC5) and runs the evaluation.
+
 ```bash
 skill='object' # switch to other skills (choices=['object', 'count', 'spatial'])
 image_dir='/path/to/generated/images'
 bash scripts/evaluate_skill_FT_DETR-R101-DC5.sh \
     --skill_name $skill \
-    --paintskills_dir $paintskills_dir \
+    --paintskills_dir $PAINTSKILLS_DIR \
     --image_dir $image_dir \
 ```
 
@@ -92,6 +105,6 @@ skill='object' # count, spatial
 bash scripts/evaluate_skill_FT_DETR-R101-DC5.sh \
     --skill_name $skill \
     --gt_data_eval \
-    --paintskills_dir $paintskills_dir
+    --paintskills_dir $PAINTSKILLS_DIR
 ```
 

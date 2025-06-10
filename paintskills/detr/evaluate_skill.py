@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     if args.image_dir is None:
         if args.gt_data_eval:
-            image_dir = paintskills_dir.joinpath(f'{skill_name}/images/')
+            image_dir = paintskills_dir.joinpath(f'{skill_name}/val_images/')
         else:
             print("Please specify --image_dir")
             exit(1)
