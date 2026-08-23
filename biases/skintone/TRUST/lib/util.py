@@ -86,7 +86,7 @@ def vertex_normals(vertices, faces):
 def rotateSH(sh_input, rot_angle, rot_axis):
     ls = np.array([0, 1, 1, 1, 2, 2, 2, 2, 2])
     ms = np.array([0, -1, 0, 1, -2, -1, 0, 1, 2])
-    mneg_mask = (ms < 0).astype(np.int)
+    mneg_mask = (ms < 0).astype(int)
 
     # (csphase=1 => exclude)
     __OUR_SH_CSPHASE = 1
@@ -581,6 +581,6 @@ def convert_image_by_pixformat_normalize(src_image, pix_format, normalize):
         src_image = src_image.transpose((2, 0, 1))
 
     if normalize:
-        src_image = (src_image.astype(np.float) / 255) * 2.0 - 1.0
+        src_image = (src_image.astype(float) / 255) * 2.0 - 1.0
 
     return src_image
